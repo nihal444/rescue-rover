@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Tracking Control</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .video-section {
+            flex: 1;
+            background: #1c1c1e;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .video-preview {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8e8e93;
+            font-size: 15px;
+            font-weight: 500;
+            object-fit: contain;
+        }
+
+        .controls-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 20px;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .control-button {
+            width: 120px;
+            height: 60px;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            background: #007aff;
+            color: white;
+        }
+
+        .control-button.auto {
+            background: #ff9500;
+        }
+
+        .control-button:active {
+            transform: scale(0.95);
+        }
+
+        .status-bar {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff3b30;
+            transition: all 0.3s ease;
+        }
+
+        .status-dot.active {
+            background: #34c759;
+        }
+
+        .tracking-info {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            background: rgba(0,0,0,0.5);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+                gap: 16px;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+                gap: 16px;
+                align-items: center;
+            }
+
+            .parameter-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="video-section">
+            <img src="{{ url_for('video_feed') }}" class="video-preview" alt="Face Tracking Feed">
+            <div class="status-bar">
+                <div class="status-dot active" id="connectionStatus" title="Connection Status"></div>
+                <div class="status-dot" id="modeStatus" title="Auto Mode"></div>
+            </div>
+            <div class="tracking-info" id="trackingInfo">Face tracking active. Motor control: <span id="controlStatus">disabled</span></div>
+        </div>
+
+        <div class="controls-section">
+            <div class="buttons-container">
+                <button class="control-button" id="modeBtn">
+                    Manual
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Button functionality
+        const modeBtn = document.getElementById('modeBtn');
+        const modeStatus = document.getElementById('modeStatus');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const trackingInfo = document.getElementById('trackingInfo');
+        const controlStatus = document.getElementById('controlStatus');
+
+        let isAutoMode = false;
+
+        modeBtn.addEventListener('click', () => {
+            isAutoMode = !isAutoMode;
+            modeBtn.textContent = isAutoMode ? 'Auto' : 'Manual';
+            modeBtn.classList.toggle('auto', isAutoMode);
+            modeStatus.classList.toggle('active', isAutoMode);
+            controlStatus.textContent = isAutoMode ? 'enabled' : 'disabled';
+            
+            // Send mode change to server
+            fetch('/control', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mode: isAutoMode ? 'auto' : 'manual' }),
+            });
+        });
+
+        // Check connection with server
+        function checkConnection() {
+            fetch('/video_feed', { method: 'HEAD' })
+                .then(() => {
+                    connectionStatus.classList.add('active');
+                })
+                .catch(() => {
+                    connectionStatus.classList.remove('active');
+                });
+        }
+
+        // Update connection status every 5 seconds
+        setInterval(checkConnection, 5000);
+        
+        // Initial connection check
+        checkConnection();
+    </script>
+</body>
+</html>
