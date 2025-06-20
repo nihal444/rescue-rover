@@ -1,14 +1,16 @@
 # Rescue Rover
 
-![Project Overview](assets/rover-diagram.png)
-<!-- If 'assets/rover-diagram.png' does not exist, update the filename to match an actual image in the assets folder. -->
-
 A cross-platform system to control a remote car using a Flutter app (with on-screen joystick/buttons) via Bluetooth and WiFi, communicating with an ESP32-based car and an ESP32-CAM for video streaming and face tracking.
+
+## Project Structure
+
+- `flutter_app/`: Flutter app for car control (mobile/web)
+- `facetrack/`: ESP32 firmware for car control and video streaming
 
 ## Features
 
-- **Joystick Control**: Intuitive on-screen joystick for precise car movement.
-- **Dual Connectivity**: Control via Bluetooth or WiFi.
+- **4 directional Button**: Intuitive on-screen buttons for precise car movement.
+- **Dual Controlling**: Control via Manual or Auto.
 - **Real-time Response**: Immediate feedback to joystick movements.
 - **Adjustable Sensitivity**: Fine-tune control responsiveness.
 - **ESP32 Integration**: Seamless communication with ESP32-based car hardware.
@@ -18,27 +20,22 @@ A cross-platform system to control a remote car using a Flutter app (with on-scr
 ## System Overview
 
 - **Flutter App**: Mobile/web app for user control.
-- **ESP32-DEV**: Receives commands via Bluetooth/WiFi, controls motors and sensors.
+- **ESP32-DEV**: Receives commands via Bluetooth, controls motors and sensors.
 - **ESP32-CAM**: Streams video and sends face tracking data to ESP32-DEV.
 
 ## Getting Started
 
-### 1. Flutter App
+### 1. Flutter App (`flutter_app/`)
 
-- Located in `flutter_app/`
-- Controls the car via Bluetooth or WiFi.
-- See `flutter_app/README.md` for detailed setup and usage.
+- Located in the `flutter_app/` folder
+- Controls the car via Bluetooth or WiFi
+- See `flutter_app/README.md` for detailed setup and usage
 
-### 2. ESP32-DEV Firmware
+### 2. ESP32-DEV & ESP32-CAM Firmware (`facetrack/`)
 
-- File: `facetrack/gyrocar_esp32.ino`
-- Receives joystick and face tracking data.
-- Controls motors, servo, and sensors.
-
-### 3. ESP32-CAM Firmware
-
-- File: `facetrack/videostream.ino`
-- Streams video and sends face tracking/motor commands to ESP32-DEV.
+- All ESP32 firmware is in the `facetrack/` folder
+- `gyrocar_esp32.ino`: Main car controller (ESP32-DEV)
+- `videostream.ino`: Video streaming and face tracking (ESP32-CAM)
 
 ## Hardware Connections
 
@@ -74,9 +71,9 @@ A cross-platform system to control a remote car using a Flutter app (with on-scr
 
 ## Usage
 
-1. Flash `gyrocar_esp32.ino` to ESP32-DEV and `videostream.ino` to ESP32-CAM.
+1. Flash `facetrack/gyrocar_esp32.ino` to ESP32-DEV and `facetrack/videostream.ino` to ESP32-CAM.
 2. Connect hardware as described above.
-3. Run the Flutter app on your device.
+3. Run the Flutter app from the `flutter_app/` folder on your device.
 4. Connect via Bluetooth or WiFi and control the car.
 
 ## References
@@ -84,5 +81,15 @@ A cross-platform system to control a remote car using a Flutter app (with on-scr
 - [Flutter documentation](https://docs.flutter.dev/)
 - [ESP32-CAM Video Streaming](https://RandomNerdTutorials.com/esp32-cam-video-streaming-web-server-camera-home-assistant/)
 
+## Snapshots
+
+![Project Overview](assets/arch.jpg)
+![Car Front View](assets/revor_1.jpg)
+![Car Side View](assets/revor_2.jpg)
+![ESP32-DEV Board](assets/cam1.jpg)
+![ESP32-CAM Board](assets/cam2.jpg)
+![Wiring Diagram](assets/flutter.jpg)
+![Wiring Diagram](assets/flutter2.jpg)
+![Wiring Diagram](assets/flutter3.jpg)
 ---
 For more details, see `flutter_app/README.md`.
