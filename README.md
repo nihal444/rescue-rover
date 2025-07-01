@@ -1,6 +1,6 @@
 # Rescue Rover
 
-A cross-platform system to control a remote car using a Flutter app (with on-screen joystick/buttons) via Bluetooth and WiFi, communicating with an ESP32-based car and an ESP32-CAM for video streaming and face tracking.
+A cross-platform system to control a remote car using a Flutter app (with on-screen buttons) via Bluetooth and WiFi, communicating with an ESP32-based car and an ESP32-CAM for video streaming and face tracking.
 
 ## Project Structure
 
